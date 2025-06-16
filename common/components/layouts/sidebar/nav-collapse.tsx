@@ -8,8 +8,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMenu } from "@/common/stores/menu";
 
-const NavCollapse = ({ menu }: { menu: MenuItemProps }) => {
+const NavCollapse = ({
+  menu,
+  mobileMenu,
+}: {
+  menu: MenuItemProps;
+  mobileMenu?: boolean;
+}) => {
   const { setIsOpen } = useMenu();
+  const { isHover } = useMenu();
   const [expand, setExpand] = useState(false);
   const parent_ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -33,13 +40,19 @@ const NavCollapse = ({ menu }: { menu: MenuItemProps }) => {
       <button
         onClick={() => setExpand(!expand)}
         className={clsx(
-          "rounded-lg p-2 flex items-center justify-between text-sm font-medium cursor-pointer hover:bg-white hover:shadow-[0_4px_50px_rgba(0,0,0,0.015)] hover:text-primary duration-200 ease-in-out group",
+          "rounded-lg p-2 flex items-center justify-between text-sm font-medium cursor-pointer hover:bg-white hover:shadow-[0_4px_50px_rgba(0,0,0,0.015)] hover:text-primary duration-300 ease-in-out group",
           activeMenu(menu) || expand
             ? "bg-white shadow-[0_4px_50px_rgba(0,0,0,0.015)] text-primary"
-            : "bg-background text-neutral-700"
+            : "bg-background text-neutral-700",
+          isHover || mobileMenu ? "gap-3" : "!gap-0"
         )}
       >
-        <div className="flex items-center gap-3">
+        <div
+          className={clsx(
+            "flex items-center",
+            isHover || mobileMenu ? "gap-3" : "!gap-0"
+          )}
+        >
           {/* Parent Icon */}
           <div
             className={clsx(
@@ -60,15 +73,29 @@ const NavCollapse = ({ menu }: { menu: MenuItemProps }) => {
               {menu.icon}
             </div>
           </div>
-          {menu.title}
+          <div
+            className={clsx(
+              "duration-300 ease-in-out",
+              isHover || mobileMenu ? "opacity-100" : "opacity-0 !w-0"
+            )}
+          >
+            {menu.title}
+          </div>
         </div>
-        <ChevronDown
-          size={18}
+        <div
           className={clsx(
-            "duration-200 ease-in-out",
-            expand ? "rotate-180" : ""
+            "duration-300 ease-in-out",
+            isHover || mobileMenu ? "opacity-100" : "opacity-0 !w-0"
           )}
-        />
+        >
+          <ChevronDown
+            size={18}
+            className={clsx(
+              "duration-200 ease-in-out",
+              expand ? "rotate-180" : ""
+            )}
+          />
+        </div>
       </button>
 
       {/* Child Items */}
@@ -79,7 +106,13 @@ const NavCollapse = ({ menu }: { menu: MenuItemProps }) => {
           opacity: expand ? 100 : 0,
         }}
       >
-        <div ref={parent_ref} className="flex flex-col pl-6 relative">
+        <div
+          ref={parent_ref}
+          className={clsx(
+            "flex flex-col relative",
+            isHover || mobileMenu ? "pl-6" : "pl-0"
+          )}
+        >
           {menu?.children?.map((children, idx) => {
             const activeSubMenu = children?.href == pathname;
             return (
@@ -100,10 +133,25 @@ const NavCollapse = ({ menu }: { menu: MenuItemProps }) => {
                   <div
                     className={clsx(
                       "h-full absolute top-0 left-0 w-[0.5px] ",
-                      activeSubMenu ? "bg-primary" : "bg-neutral-300"
+                      activeSubMenu ? "bg-primary" : "bg-neutral-300",
+                      isHover || mobileMenu ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {children?.title}
+                  <div
+                    className={clsx(
+                      "duration-300 ease-in-out flex items-center",
+                      isHover || mobileMenu ? "gap-2" : "gap-0"
+                    )}
+                  >
+                    {children.icon}
+                    <div
+                      className={clsx(
+                        isHover || mobileMenu ? "opacity-100" : "opacity-0 !w-0"
+                      )}
+                    >
+                      {children.title}
+                    </div>
+                  </div>
                 </Link>
               </div>
             );

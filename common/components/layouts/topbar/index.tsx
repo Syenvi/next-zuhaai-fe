@@ -101,7 +101,7 @@ const Breadcrumbs = () => {
   const { setIsOpen } = useMenu();
 
   return (
-    <header className="sticky top-0 flex items-center justify-between p-3 lg:p-5 border-b border-neutral-200 bg-white">
+    <header className="sticky top-0 flex items-center justify-between p-3 lg:p-5 border-b border-neutral-200 bg-white z-10">
       <Menu
         className="lg:hidden cursor-pointer p-1 active:scale-95 bg-primary/20 hover:bg-primary/30 duration-200 ease-in-out rounded-lg"
         onClick={setIsOpen}

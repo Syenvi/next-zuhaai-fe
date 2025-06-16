@@ -6,8 +6,16 @@ import clsx from "clsx";
 import Menus from "./menu";
 
 const DesktopMenu = () => {
+  const { setIsHover, isHover } = useMenu();
   return (
-    <div className="hidden lg:flex w-[18em] h-dvh sticky top-0 p-5">
+    <div
+      className={clsx(
+        "hidden lg:flex h-dvh sticky top-0 p-5 duration-300 ease-in-out overflow-y-auto",
+        isHover ? "w-[18em]" : "w-[97px]"
+      )}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+    >
       <Menus />
     </div>
   );
@@ -24,11 +32,11 @@ const MobileMenu = () => {
     <>
       <div
         className={clsx(
-          "lg:hidden duration-300 ease-in-out fixed top-0 left-0 bg-background h-dvh z-30 p-3 w-[18em]",
+          "lg:hidden duration-300 ease-in-out fixed top-0 left-0 bg-background h-dvh z-30 p-3 w-[18em] overflow-y-auto",
           isOpen ? "" : "-translate-x-full"
         )}
       >
-        <Menus />
+        <Menus mobileMenu />
       </div>
       <div
         onClick={() => setIsOpen()}

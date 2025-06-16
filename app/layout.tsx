@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { METADATA } from "@/common/constants/metadata";
-import { manropeSans } from "@/common/styles/fonts";
 import NextTopLoader from "nextjs-toploader";
 import Layouts from "@/common/components/layouts";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ConfigProvider } from "antd";
+import { nunitoSans } from "@/common/styles/fonts";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -35,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${manropeSans.className} antialiased`}>
+      <body className={`${nunitoSans.className} antialiased`}>
         <NextTopLoader
           color="#05b6d3"
           initialPosition={0.08}
@@ -48,7 +49,16 @@ export default function RootLayout({
           shadow="0 0 10px #05b6d3,0 0 5px #45c6c0"
         />
         <AntdRegistry>
-          <Layouts>{children}</Layouts>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "#615fff",
+                fontFamily: "Nunito, sans-serif",
+              },
+            }}
+          >
+            <Layouts>{children}</Layouts>
+          </ConfigProvider>
         </AntdRegistry>
       </body>
     </html>

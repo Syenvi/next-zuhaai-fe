@@ -1,11 +1,4 @@
-import {
-  CheckCircle,
-  ClipboardList,
-  FileText,
-  Home,
-  UserCheck,
-  Users,
-} from "lucide-react";
+import { Home, Plug, Bot, Boxes, BarChart } from "lucide-react";
 import { MenuItemProps } from "../types/menu";
 
 const iconSize = 17;
@@ -18,46 +11,30 @@ export const MENU_ITEMS: MenuItemProps[] = [
     type: "item",
   },
   {
-    title: "Data Guru",
-    icon: <UserCheck size={iconSize} />,
-    type: "collapse",
-    children: [
-      {
-        title: "Jus Testing",
-        href: "/teachers",
-        icon: <UserCheck size={iconSize} />,
-        type: "item",
-      },
-      {
-        title: "Jus Testing 2",
-        href: "/teachers/child",
-        icon: <UserCheck size={iconSize} />,
-        type: "item",
-      },
-    ],
-  },
-  {
-    title: "Data Peserta",
-    href: "/participants",
-    icon: <Users size={iconSize} />,
+    title: "Analytics",
+    href: "/analytics",
+    icon: <BarChart size={iconSize} />,
     type: "item",
   },
   {
-    title: "Soal Ujian",
-    href: "/exam-questions",
-    icon: <FileText size={iconSize} />,
+    type: "divider",
+  },
+  {
+    title: "Connected Platforms",
+    href: "/connected-platforms",
+    icon: <Plug size={iconSize} />,
     type: "item",
   },
   {
-    title: "Peserta Ujian",
-    href: "/exam-participants",
-    icon: <ClipboardList size={iconSize} />,
+    title: "AI Agents",
+    href: "/ai-agents",
+    icon: <Bot size={iconSize} />,
     type: "item",
   },
   {
-    title: "Hasil Ujian",
-    href: "/exam-results",
-    icon: <CheckCircle size={iconSize} />,
+    title: "Products",
+    href: "/products",
+    icon: <Boxes size={iconSize} />,
     type: "item",
   },
 ];

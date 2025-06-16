@@ -1,8 +1,5 @@
+import HomeView from "@/modules/home/components/Home";
+
 export default function Home() {
-  return (
-    <>
-      <div className="min-h-dvh">Halo Dunia</div>;
-      <div className="min-h-dvh">s</div>
-    </>
-  );
+  return <HomeView />;
 }

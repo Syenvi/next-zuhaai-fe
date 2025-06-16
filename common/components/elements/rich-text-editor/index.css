@@ -1,0 +1,96 @@
+@media print {
+  body {
+    margin: 0 !important;
+  }
+}
+
+/* CKEditor list styling */
+.ck-content ul,
+.ck-content ol {
+  padding-left: 1.5rem;
+  margin: 1em 0;
+}
+
+.ck-content ul {
+  list-style-type: disc;
+}
+
+.ck-content ol {
+  list-style-type: decimal;
+}
+
+.ck-content li {
+  margin-bottom: 0.25em;
+}
+
+/* Print-specific list styling */
+@media print {
+  .ck-content ul,
+  .ck-content ol {
+    padding-left: 1.5rem;
+    list-style-position: inside;
+  }
+
+  .ck-content ul {
+    list-style-type: disc;
+  }
+
+  .ck-content ol {
+    list-style-type: decimal;
+  }
+
+  .ck-content li {
+    margin-bottom: 0.2em;
+  }
+}
+
+.ck-content h1 {
+  font-size: 1.75rem; /* Ukuran h2 */
+  font-weight: 600;
+}
+
+.ck-content h2 {
+  font-size: 1.5rem; /* Ukuran h3 */
+  font-weight: 600;
+}
+
+.ck-content h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.ck-content h4 {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.ck-content h5 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.ck-content h6 {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.main-container {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ck-content {
+  word-break: break-word;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+  min-width: 795px;
+  max-width: 795px;
+}
+
+.ck.ck-content {
+  border-radius: 0 0 12px 12px;
+  min-height: 200px;
+  padding: 1rem;
+}
