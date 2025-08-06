@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_SERVER_API_URL}`,
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
