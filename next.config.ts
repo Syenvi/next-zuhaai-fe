@@ -21,6 +21,10 @@ const nextConfig: NextConfig = {
         port: "5000",
         pathname: "/product-images/**",
       },
+      {
+        protocol: "https",
+        hostname: "api.zuhaai.ucappin.my.id",
+      },
     ],
   },
 };
