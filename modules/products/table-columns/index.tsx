@@ -7,8 +7,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Banknote,
   Box,
   Calendar,
+  ClipboardList,
   Edit,
   MoreHorizontal,
   Text,
@@ -16,20 +18,23 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import ConfirmDelete from "@/common/components/elements/confirm-delete";
 import { Button } from "antd";
+import Image from "next/image";
+import ProductForm from "../components/product-form";
+import { ProductPayloadType } from "../types";
+import { useDeleteProduct } from "../services";
+import toast from "react-hot-toast";
 
-type ProductsType = {
-  id: string;
-  name: string;
-  detail: string;
-  created_at: string;
-};
-
-// nama, aksi
-
-export const ProductsCollumns: ColumnDef<ProductsType, unknown>[] = [
+export const ProductsCollumns = (
+  refetch: () => void
+): ColumnDef<ProductPayloadType, unknown>[] => [
   {
     id: "no",
     accessorKey: "no",
@@ -41,6 +46,26 @@ export const ProductsCollumns: ColumnDef<ProductsType, unknown>[] = [
     },
 
     enableSorting: false,
+  },
+  {
+    id: "img",
+    cell: ({ row }) => {
+      const product = row.original;
+      return product?.images?.length > 0 ? (
+        <div className="flex items-center">
+          <div className="w-[150px] h-[150px] rounded-md overflow-hidden relative">
+            <Image
+              className="object-cover"
+              alt={`${product.name}-image`}
+              fill
+              src={`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/product-images/${product?.images?.[0]?.url}`}
+            />
+          </div>
+        </div>
+      ) : (
+        "-"
+      );
+    },
   },
   {
     accessorKey: "name",
@@ -58,18 +83,50 @@ export const ProductsCollumns: ColumnDef<ProductsType, unknown>[] = [
     },
   },
   {
-    accessorKey: "detail",
+    accessorKey: "price",
     header: () => (
       <div className="flex items-center gap-2">
-        <Text size={16} />
-        <span>Detail</span>
+        <Banknote size={16} />
+        <span>Price</span>
       </div>
     ),
     cell: ({ row }) => {
       const product = row.original;
       return (
         <div className="flex items-center gap-2 min-w-max">
-          {product.detail}
+          IDR {product.price?.toLocaleString()}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "stock",
+    header: () => (
+      <div className="flex items-center gap-2">
+        <ClipboardList size={16} />
+        <span>Stock</span>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const product = row.original;
+      return (
+        <div className="flex items-center gap-2 min-w-max">{product.stock}</div>
+      );
+    },
+  },
+  {
+    accessorKey: "desc",
+    header: () => (
+      <div className="flex items-center gap-2">
+        <Text size={16} />
+        <span>Description</span>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const product = row.original;
+      return (
+        <div className="flex items-center gap-2 min-w-max">
+          {product.description || "-"}
         </div>
       );
     },
@@ -98,11 +155,24 @@ export const ProductsCollumns: ColumnDef<ProductsType, unknown>[] = [
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const [dialog, setDialog] = useState<{
         type: string;
-        data: ProductsType | null;
+        data: ProductPayloadType | null;
       }>({
         type: "",
         data: null,
       });
+
+      const { mutate: deleteProduct, isPending: loadingDelete } =
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useDeleteProduct({
+          onSuccess: () => {
+            toast.success("Successfully delete product");
+            refetch();
+            setDialog((prev) => ({ ...prev, type: "", data: null }));
+          },
+          onError: (err) => {
+            toast.error(err.message);
+          },
+        });
 
       return (
         <div className="flex justify-center ">
@@ -122,7 +192,15 @@ export const ProductsCollumns: ColumnDef<ProductsType, unknown>[] = [
               </DropdownMenuLabel>
 
               <DropdownMenuSeparator className="!bg-text_third" />
-              <DropdownMenuItem className="flex items-center gap-2 font-medium  !text-blue-500 cursor-pointer rounded-md">
+              <DropdownMenuItem
+                onClick={() =>
+                  setDialog((prev) => ({
+                    ...prev,
+                    type: "edit",
+                  }))
+                }
+                className="flex items-center gap-2 font-medium  !text-blue-500 cursor-pointer rounded-md"
+              >
                 <Edit className="text-blue-500" /> Edit
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -150,11 +228,30 @@ export const ProductsCollumns: ColumnDef<ProductsType, unknown>[] = [
             }
           >
             <DialogContent>
-              <ConfirmDelete
-                onCancel={() => setDialog((prev) => ({ ...prev, type: "" }))}
-                onConfirm={() => console.log("delted")}
-                title={product?.name}
-              />
+              {dialog.type == "delete" ? (
+                <ConfirmDelete
+                  onLoading={loadingDelete}
+                  onCancel={() => setDialog((prev) => ({ ...prev, type: "" }))}
+                  onConfirm={() => deleteProduct(product.id)}
+                  title={`"${product?.name}"`}
+                />
+              ) : dialog.type == "edit" ? (
+                <>
+                  <DialogTitle>Edit Product</DialogTitle>
+                  <DialogDescription>
+                    Fill in the details below to add a new product. Click save
+                    when you&apos;re done.
+                  </DialogDescription>
+                  <ProductForm
+                    refetch={refetch}
+                    setDialog={() =>
+                      setDialog((prev) => ({ ...prev, type: "", data: null }))
+                    }
+                    data={product}
+                    editMode
+                  />
+                </>
+              ) : null}
             </DialogContent>
           </Dialog>
         </div>

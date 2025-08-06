@@ -27,8 +27,6 @@ import { usePathname, useRouter } from "next/navigation";
 
 interface PaginatedData<TData> {
   data: TData[];
-  prev_page_url: string | null;
-  next_page_url: string | null;
   last_page: number;
 }
 

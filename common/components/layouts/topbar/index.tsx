@@ -1,11 +1,13 @@
 "use client";
 import { MENU_ITEMS } from "@/common/constants/menu";
+import { useAuthStore } from "@/common/stores/auth";
 import { useMenu } from "@/common/stores/menu";
 import { MenuItemProps } from "@/common/types/menu";
-import { Avatar, Breadcrumb, Dropdown, MenuProps, Space, Tag } from "antd";
-import { BadgeDollarSign, Home, LogOut, Menu, Star } from "lucide-react";
+import { Avatar, Breadcrumb, Dropdown, MenuProps, Space } from "antd";
+import { Home, LogOut, Menu } from "lucide-react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 // Fungsi untuk mencari menu berdasarkan path
 const findMenuByPath = (
@@ -25,6 +27,8 @@ const findMenuByPath = (
 const Breadcrumbs = () => {
   const pathname = usePathname();
   const parts = pathname.split("/").filter(Boolean);
+  const router = useRouter();
+  const { user } = useAuthStore();
 
   // Bangun breadcrumbs
   const breadcrumbs = parts
@@ -43,44 +47,12 @@ const Breadcrumbs = () => {
           <Avatar
             alt="avatar"
             size="large"
-            icon={
-              <Image
-                alt="avatar"
-                src={
-                  "https://i.pinimg.com/736x/ae/b0/f4/aeb0f43ef8e52aa57521161ff845da66.jpg"
-                }
-                fill
-              />
-            }
+            icon={<Image alt="avatar" src={`${user.avatar}`} fill />}
           />{" "}
           <div>
-            <p className="font-semibold">Syahdin Raditya</p>
-            <p className="text-neutral-500">Developer</p>
+            <p className="font-semibold">{user.name}</p>
+            <p className="text-neutral-500">{user.email}</p>
           </div>
-        </Space>
-      ),
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "2",
-      label: (
-        <div className="flex items-center gap-2">
-          <Space className="!gap-1 text-neutral-700">
-            <Star size={18} />
-            Upgrade Plan
-          </Space>
-          <Tag color="orange">Soon</Tag>
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <Space className="!gap-1 text-neutral-700">
-          <BadgeDollarSign size={18} />
-          Credit: 0
         </Space>
       ),
     },
@@ -90,7 +62,13 @@ const Breadcrumbs = () => {
     {
       key: "4",
       label: (
-        <Space className="!text-red-500 !gap-1">
+        <Space
+          className="!text-red-500 !gap-1"
+          onClick={() => {
+            Cookies.remove("access_token");
+            router.replace("/login");
+          }}
+        >
           <LogOut size={18} />
           Logout
         </Space>
@@ -125,19 +103,11 @@ const Breadcrumbs = () => {
           <Avatar
             alt="avatar"
             size="large"
-            icon={
-              <Image
-                alt="avatar"
-                src={
-                  "https://i.pinimg.com/736x/ae/b0/f4/aeb0f43ef8e52aa57521161ff845da66.jpg"
-                }
-                fill
-              />
-            }
+            icon={<Image alt="avatar" src={`${user.avatar}`} fill />}
           />{" "}
           <div>
-            <p className="font-semibold">Syahdin Raditya</p>
-            <p className="text-neutral-500">Developer</p>
+            <p className="font-semibold">{user.name}</p>
+            <p className="text-neutral-500">{user.email}</p>
           </div>
         </Space>
       </Dropdown>

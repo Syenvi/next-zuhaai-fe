@@ -6,6 +6,9 @@ import Layouts from "@/common/components/layouts";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import { nunitoSans } from "@/common/styles/fonts";
+import { Suspense } from "react";
+import Loader from "@/common/components/elements/loader";
+import ReactQueryProvider from "@/common/components/layouts/react-query-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -13,6 +16,7 @@ export const metadata: Metadata = {
       ? "http://localhost:3000"
       : process.env.DOMAIN || ""
   ),
+  title: METADATA.title,
   description: METADATA.description,
   keywords: METADATA.keyword,
   creator: METADATA.creator,
@@ -21,9 +25,10 @@ export const metadata: Metadata = {
     url: METADATA.openGraph.url,
   },
   openGraph: {
-    // images: METADATA.profile,
     url: METADATA.openGraph.url,
     siteName: METADATA.openGraph.siteName,
+    title: METADATA.openGraph.title,
+    description: METADATA.openGraph.description,
     locale: METADATA.openGraph.locale,
     type: "website",
   },
@@ -57,7 +62,11 @@ export default function RootLayout({
               },
             }}
           >
-            <Layouts>{children}</Layouts>
+            <Suspense fallback={<Loader />}>
+              <ReactQueryProvider>
+                <Layouts>{children}</Layouts>
+              </ReactQueryProvider>
+            </Suspense>
           </ConfigProvider>
         </AntdRegistry>
       </body>

@@ -11,36 +11,37 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CreateProductForm from "./create-product-form";
 import { DataTable } from "@/common/components/elements/data-table";
 import { ProductsCollumns } from "../table-columns";
 import { useSearchParams } from "next/navigation";
+import { useGetProducts } from "../services";
+import { useDebounce } from "use-debounce";
+import Loader from "@/common/components/elements/loader";
+import ProductForm from "./product-form";
 
 const ProductsView = () => {
   const [dialog, setDialog] = useState({
     product: { status: false },
   });
+  const [filter, setFilter] = useState({
+    s_name: "",
+  });
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const searchParams = useSearchParams();
+  const [debounceName] = useDebounce(filter.s_name, 500);
+
   useEffect(() => {
     const paramPage = Number(searchParams.get("page")) || 1;
     setPage(paramPage);
   }, [searchParams]);
 
-  const dummyProduct = {
-    prev_page_url: "1",
-    next_page_url: "3",
-    last_page: 10,
-    data: [
-      {
-        id: "1",
-        name: "Zuhaa",
-        detail: "detail",
-        created_at: "11 Juni 2025",
-      },
-    ],
-  };
+  const {
+    data: productDatas,
+    isFetching: loadingProducts,
+    refetch,
+  } = useGetProducts(page, pageSize, debounceName);
+
   return (
     <div className="flex flex-col gap-3 lg:gap-5 flex-1">
       <h3 className="text-neutral-700 lg:text-xl font-medium">Products</h3>
@@ -48,7 +49,12 @@ const ProductsView = () => {
         <Search
           placeholder="Search products..."
           allowClear
-          onSearch={() => {}}
+          onChange={(e) =>
+            setFilter((prev) => ({ ...prev, s_name: e.target.value }))
+          }
+          onSearch={(val: string) => {
+            setFilter((prev) => ({ ...prev, s_name: val }));
+          }}
           className="max-w-[300px]"
         />
         <Button
@@ -62,21 +68,27 @@ const ProductsView = () => {
         </Button>
       </section>
       <Divider className="!my-0 !max-w-max" />
-      <EmptyProductSection />
-      <DataTable
-        columns={ProductsCollumns}
-        data={dummyProduct}
-        page={page}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-      />
+
+      {loadingProducts ? (
+        <Loader />
+      ) : productDatas?.data?.length > 0 ? (
+        <DataTable
+          columns={ProductsCollumns(refetch)}
+          data={productDatas}
+          page={page}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
+      ) : (
+        <EmptyProductSection />
+      )}
       <Dialog
         open={dialog.product.status}
         onOpenChange={() =>
           setDialog((prev) => ({ ...prev, product: { status: false } }))
         }
       >
-        <DialogContent>
+        <DialogContent className="max-h-[80dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create Product</DialogTitle>
             <DialogDescription>
@@ -84,7 +96,12 @@ const ProductsView = () => {
               you&apos;re done.
             </DialogDescription>
           </DialogHeader>
-          <CreateProductForm />
+          <ProductForm
+            refetch={refetch}
+            setDialog={() =>
+              setDialog((prev) => ({ ...prev, product: { status: false } }))
+            }
+          />
         </DialogContent>
       </Dialog>
     </div>

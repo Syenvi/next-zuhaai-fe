@@ -2,14 +2,41 @@ import { Button, Form } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import { Bot } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
+import { AgentPayloadType } from "../../types";
+import { useUpdateAgent } from "../services";
+import toast from "react-hot-toast";
 
-const KnowledgeView = () => {
+const KnowledgeView = ({
+  data,
+  refetch,
+}: {
+  data: AgentPayloadType;
+  refetch: () => void;
+}) => {
   const [form] = useForm();
-  const onFinish = () => {
-    console.log("submit");
+
+  const { mutate: updateAgent, isPending: loadingUpdate } = useUpdateAgent({
+    onSuccess: () => {
+      toast.success("Agent successfully updated !");
+      refetch();
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const onFinish = (values: AgentPayloadType) => {
+    updateAgent({ body: values, agent_id: data.id });
   };
   const knowledge = Form.useWatch("knowledge", form);
+  useEffect(() => {
+    if (data) {
+      form.setFieldsValue({
+        knowledge: data.knowledge,
+      });
+    }
+  }, [data]);
 
   return (
     <Form
@@ -37,6 +64,7 @@ const KnowledgeView = () => {
         htmlType="submit"
         type="primary"
         className="!font-semibold !w-full !p-5"
+        loading={loadingUpdate}
       >
         <Bot size={20} /> Save AI Settings
       </Button>

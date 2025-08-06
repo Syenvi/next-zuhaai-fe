@@ -6,9 +6,15 @@ type ConfirmDeleteProps = {
   title: string;
   onCancel: () => void;
   onConfirm: () => void;
+  onLoading: boolean;
 };
 
-const ConfirmDelete = ({ title, onCancel, onConfirm }: ConfirmDeleteProps) => {
+const ConfirmDelete = ({
+  title,
+  onCancel,
+  onConfirm,
+  onLoading,
+}: ConfirmDeleteProps) => {
   return (
     <section className="space-y-5">
       <header className="flex items-start gap-3">
@@ -24,12 +30,14 @@ const ConfirmDelete = ({ title, onCancel, onConfirm }: ConfirmDeleteProps) => {
       <footer className="flex justify-end gap-2">
         <Button
           type="primary"
+          loading={onLoading}
           className="!bg-neutral-200 !text-neutral-600 !font-semibold"
           onClick={onCancel}
         >
           Cancel
         </Button>
         <Button
+          loading={onLoading}
           type="primary"
           className="!bg-red-500 !font-semibold"
           onClick={onConfirm}

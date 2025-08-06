@@ -2,15 +2,47 @@ import { Button, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import { Bot } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
+import { AgentPayloadType } from "../../types";
+import toast from "react-hot-toast";
+import { useUpdateAgent } from "../services";
 
-const GeneralView = () => {
+const GeneralView = ({
+  data,
+  refetch,
+}: {
+  data: AgentPayloadType;
+  refetch: () => void;
+}) => {
   const [form] = useForm();
-  const onFinish = () => {
-    console.log("submit");
+  const { mutate: updateAgent, isPending: loadingUpdateAgent } = useUpdateAgent(
+    {
+      onSuccess: () => {
+        toast.success("Agent successfully updated");
+        refetch();
+      },
+      onError: (err) => {
+        toast.error(err.message);
+      },
+    }
+  );
+
+  const onFinish = (values: AgentPayloadType) => {
+    updateAgent({ body: values, agent_id: data.id });
   };
   const prompt = Form.useWatch("prompt", form);
   const welcome_msg = Form.useWatch("welcome_msg", form);
+
+  useEffect(() => {
+    if (data) {
+      form.setFieldsValue({
+        name: data?.name,
+        description: data?.description,
+        prompt: data?.prompt,
+        welcome_msg: data?.welcome_message,
+      });
+    }
+  }, [data]);
   return (
     <Form
       layout="vertical"
@@ -78,6 +110,7 @@ const GeneralView = () => {
         htmlType="submit"
         type="primary"
         className="!font-semibold !w-full !p-5"
+        loading={loadingUpdateAgent}
       >
         <Bot size={20} /> Save AI Settings
       </Button>

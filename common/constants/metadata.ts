@@ -1,29 +1,21 @@
 export const METADATA = {
-  creator: "Imusuhu Yahya",
+  creator: "Syahdin Raditya",
   description:
-    "Tes Online Seleksi Beasiswa - Platform terbaik untuk persiapan beasiswa dengan soal yang relevan dan evaluasi instan.",
+    "Zuha AI adalah platform customer service berbasis AI yang membantu bisnis merespons pelanggan secara otomatis dan cerdas.",
   keyword:
-    "Tes Online, Seleksi Beasiswa, Ujian Online, Persiapan Beasiswa, Platform Tes",
+    "AI Customer Service, WhatsApp Bot, Zuha AI, Platform AI Indonesia, Chatbot Bisnis, Customer Support Otomatis",
   authors: {
-    name: "Imusuhu Yahya",
+    name: "Syahdin Raditya",
     url: process.env.DOMAIN,
   },
+  title: "Zuha AI – Customer Service Berbasis AI untuk Bisnis Anda",
   openGraph: {
     url: process.env.DOMAIN,
-    siteName: "Tes Online Seleksi Beasiswa - Imusuhu Yahya",
-    title: "Tes Online Seleksi Beasiswa | Persiapkan Masa Depanmu",
+    siteName: "Zuha AI – Platform Customer Service Cerdas",
+    title: "Zuha AI | Customer Service Otomatis Berbasis AI",
     description:
-      "Ikuti tes online seleksi beasiswa dengan platform terpercaya. Dapatkan pengalaman belajar yang interaktif dan evaluasi hasil ujian secara langsung.",
+      "Gunakan Zuha AI untuk melayani pelanggan Anda secara otomatis di WhatsApp dan platform lainnya dengan agen cerdas berbasis GPT.",
     locale: "id-ID",
-    // images: [
-    //   {
-    //     url: `${process.env.DOMAIN}/images/og-image.jpg`,
-    //     width: 1200,
-    //     height: 630,
-    //     alt: "Tes Online Seleksi Beasiswa",
-    //   },
-    // ],
   },
-  exTitle: "| Tes Online Seleksi Beasiswa",
-  //   profile: "/images/me.jpg",
+  exTitle: "| Zuha AI",
 };

@@ -1,8 +1,21 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import FlowCard from "./flow-card";
 import Link from "next/link";
+import { useAuthStore } from "@/common/stores/auth";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import CreateBusinessForm from "./create-business-form";
 
 const HomeView = () => {
+  const { user } = useAuthStore();
+  const [dialogs, setDialogs] = useState({
+    create: { status: !user?.business?.name || false },
+  });
   const data = [
     {
       src: "/products.png",
@@ -46,6 +59,20 @@ const HomeView = () => {
           Butuh bantuan lebih? Lihat Tutorial Youtube kami
         </Link>
       </div>
+      <Dialog open={dialogs.create.status}>
+        <DialogContent className="bg-white">
+          <DialogTitle>Create your Business</DialogTitle>
+          <DialogDescription>
+            {" "}
+            Fill in the details below to set up your business profile.
+          </DialogDescription>
+          <CreateBusinessForm
+            setDialogs={() =>
+              setDialogs((prev) => ({ ...prev, create: { status: false } }))
+            }
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
